@@ -1,0 +1,6 @@
+# Prevents commiting cached data
+__pycache__
+# No databases on github, bad design
+/data/**/*
+# No need to have on github
+/fileserver/main.exe
