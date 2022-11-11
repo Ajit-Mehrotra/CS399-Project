@@ -1,6 +1,6 @@
 import os 
 
-from preprocessing.read_data import read_data, read_train, read_test
+from preprocessing.read_data import read_data
 from preprocessing.split import split_data
 from preprocessing.refactor import remove_non_us
 
@@ -25,8 +25,8 @@ def verify_database() -> None:
 def main():
     verify_database()
 
-    train = read_train(['data', 'train.csv'])
-    test = read_test(['data', 'test.csv'])
+    train = read_data(['data', 'train.csv'])
+    test = read_data(['data', 'test.csv'])
     print(train.shape, test.shape)
 
 
