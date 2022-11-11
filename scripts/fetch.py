@@ -1,7 +1,6 @@
 import os
 import requests
 
-
 def fetch(file_path: list[str]) -> None:
     ''' Downloads the dataset from private server '''
 
