@@ -10,4 +10,5 @@ def remove_non_us(data: pd.DataFrame) -> pd.DataFrame:
            ', UT', ', VA', ', VT', ', WA', ', WI', ', WV', ', WY']
 
     print("Removing non US reviews")
-    return data[~data['location'].isin(States)]
+    data.dropna(subset=['location'], inplace=True)
+    return data[data['location'].str.contains('|'.join(States))]
