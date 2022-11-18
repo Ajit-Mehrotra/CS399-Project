@@ -1,5 +1,5 @@
 import pandas as pd
-
+from sklearn.impute import SimpleImputer
 
 def remove_non_us(data: pd.DataFrame) -> pd.DataFrame:
     """Remove non US reviews."""
@@ -40,7 +40,14 @@ def codeify(data: pd.DataFrame) -> pd.DataFrame:
 
     data['current'] = data['current'].map(employment_status)
 
-    # There's no null in our data, so leaving this out for now
-    # data['current'].fillna(0, inplace=True)
+    return data
 
+def fill_na(data: pd.DataFrame) -> pd.DataFrame:
+    """Fill missing values in data."""
+
+    print("Filling missing values")
+
+    for col in ["work_life_balance", "culture_values", "diversity_inclusion", "career_opp", "comp_benefits", "senior_mgmt"]:
+        mode_imputer = SimpleImputer(strategy='most_frequent')
+        data[col] = mode_imputer.fit_transform(data[[col]])
     return data

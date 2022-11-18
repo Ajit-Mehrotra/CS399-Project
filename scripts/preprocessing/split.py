@@ -17,7 +17,7 @@ def split_data(data: pd.DataFrame, ratio: float, folder_path: list[str], seed=42
 
     train_set.to_csv(os.path.join(folder_path, 'train.csv'), index=False)
     test_set.to_csv(os.path.join(folder_path, 'test.csv'), index=False)
-        
+
     return x_train, x_test, y_train, y_test
     
 def split_train_test(train: pd.DataFrame, test: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:

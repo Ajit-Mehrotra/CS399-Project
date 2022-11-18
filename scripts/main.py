@@ -7,6 +7,7 @@ from preprocessing.split import split_data
 from preprocessing.split import split_train_test
 from preprocessing.refactor import remove_non_us
 from preprocessing.refactor import codeify
+from preprocessing.refactor import fill_na
 
 from analysis.explore import explore
 
@@ -16,8 +17,10 @@ def process() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     data = read_data(['data', 'glassdoor_reviews.csv'])
     data = remove_non_us(data)
     data = codeify(data)
+    # data = fill_na(data) Waitng on group decision if this is needed
     
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])
+    
     return X_train, X_test, y_train, y_test
 
 def establish_database() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -27,9 +30,11 @@ def establish_database() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray
         from fetch import fetch
         fetch(['data', 'glassdoor_reviews.csv'])
         X_train, X_test, y_train, y_test = process()
+        return X_train, X_test, y_train, y_test
 
     elif not os.path.exists(os.path.join('data', 'train.csv')) or not os.path.exists(os.path.join('data', 'test.csv')):
         X_train, X_test, y_train, y_test = process()
+        return X_train, X_test, y_train, y_test
 
     else:
         print("Database already exists")
