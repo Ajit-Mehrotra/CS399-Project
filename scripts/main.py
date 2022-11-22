@@ -1,11 +1,13 @@
 import os 
 import numpy as np
 import pandas as pd
+# Ignores copy warnings on working code, python is just being annoying
 pd.options.mode.chained_assignment = None # default='warn'
 
 from preprocessing.data_management import read_data
 from preprocessing.split import split_data, split_train_test
-from preprocessing.refactor import remove_non_us, codeify, fill_na, column_droppage, remove_na
+from preprocessing.clean import remove_non_us, fill_na, column_droppage, remove_na
+from preprocessing.transformAndScale import codeify
 
 from analysis.explore import explore
 from analysis.trainAndEvaluate import trainAndEvaluate
@@ -46,10 +48,8 @@ def establish_database() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray
 def main():
     X_train, X_test, y_train, y_test = establish_database()
     
-    # explore(X_train, X_test, y_train, y_test)
+    explore(X_train, X_test, y_train, y_test)
     trainAndEvaluate(X_train, X_test, y_train, y_test)
-
-
 
 
 if __name__ == '__main__':

@@ -13,9 +13,10 @@
 │   │   ├── data_management.py
 │   │   ├── split.py
 │   │   ├── transformAndScale.py
-│   │   └── refactor.py
+│   │   └── clean.py
 |   ├── analysis
-│   │   └── explore.py
+|   │   ├── explore.py
+│   │   └── trainAndEvaluate.py
 ├── data
 │   ├── glassdoor_reviews.csv (raw data)
 │   ├── GDR_Refactored_Train.csv (refactored data, dropped Non-US, training set)
