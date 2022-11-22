@@ -3,6 +3,7 @@ import numpy as np
 from pandas.api.types import is_numeric_dtype
 
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import sys
 import os
@@ -29,9 +30,10 @@ def explore(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_test
             print("Correlation: ", round(X[col].corr(y), 2))
             print("Covariance: ", round(X[col].cov(y), 2))
         
-    review_source(X, y)
+    visualize_employmentstat(X, y)
+    visualize_numeric(X, y)
 
-def review_source(X: pd.DataFrame, y: pd.DataFrame) -> None:
+def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
     ''' See distribution of reviews by employment status at the time of review '''
 
     employment_status = {
@@ -57,7 +59,29 @@ def review_source(X: pd.DataFrame, y: pd.DataFrame) -> None:
     plt.xlabel("Employment Status")
     plt.ylabel("Count")
     plt.xticks(rotation=45, ha="right")
-    plt.bar(employment_status.keys(), X['current'].value_counts())
+    sns.barplot(x=X['current'].value_counts().index, y=X['current'].value_counts())
     plt.subplots_adjust(bottom=.25, left=.15)
     plt.show()
     plt.close(fig)
+
+def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
+
+    for col in X.columns:
+        if is_numeric_dtype(X[col]) and col != "current":
+            print("Visualizing ", col)
+            fig = plt.figure(figsize=(10, 10))
+            plt.title("Histogram distribution of " + col)
+            plt.xlabel(col)
+            plt.ylabel("Count")
+            sns.histplot(X[col])
+            plt.show()
+            plt.close(fig)
+            
+            fig2 = plt.figure(figsize=(10, 10))
+            plt.title("Boxplot distribution of " + col)
+            plt.xlabel(col)
+            plt.ylabel("Rating")
+            sns.boxplot(x=X[col], y=y)
+            plt.show()
+            plt.close(fig2)
+

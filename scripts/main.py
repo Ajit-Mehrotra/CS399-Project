@@ -1,13 +1,11 @@
 import os 
 import numpy as np
-
+import pandas as pd
+pd.options.mode.chained_assignment = None # default='warn'
 
 from preprocessing.data_management import read_data
-from preprocessing.split import split_data
-from preprocessing.split import split_train_test
-from preprocessing.refactor import remove_non_us
-from preprocessing.refactor import codeify
-from preprocessing.refactor import fill_na
+from preprocessing.split import split_data, split_train_test
+from preprocessing.refactor import remove_non_us, codeify, fill_na, column_droppage, remove_na
 
 from analysis.explore import explore
 
@@ -17,7 +15,9 @@ def process() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     data = read_data(['data', 'glassdoor_reviews.csv'])
     data = remove_non_us(data)
     data = codeify(data)
-    # data = fill_na(data) Waitng on group decision if this is needed
+    data = fill_na(data)
+    data = column_droppage(data, ["diversity_inclusion"])
+    data = remove_na(data, ["headline"])
     
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])
     

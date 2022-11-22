@@ -7,7 +7,7 @@ import (
 
 func main() {
 	http.HandleFunc("/glassdoor_reviews.csv", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Serving browser download")
+		fmt.Println("Serving database download")
 		http.ServeFile(w, r, "./glassdoor_reviews.csv")
 	})
 
