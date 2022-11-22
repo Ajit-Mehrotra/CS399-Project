@@ -8,16 +8,17 @@ from preprocessing.split import split_data, split_train_test
 from preprocessing.refactor import remove_non_us, codeify, fill_na, column_droppage, remove_na
 
 from analysis.explore import explore
+from analysis.trainAndEvaluate import trainAndEvaluate
 
 def process() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     ''' Initialization for data processing, only run when needed '''
 
     data = read_data(['data', 'glassdoor_reviews.csv'])
     data = remove_non_us(data)
-    data = codeify(data)
-    data = fill_na(data)
-    data = column_droppage(data, ["diversity_inclusion"])
     data = remove_na(data, ["headline"])
+    data = codeify(data)
+    data = fill_na(data, ["work_life_balance", "culture_values", "career_opp", "comp_benefits", "senior_mgmt"])
+    data = column_droppage(data, ["firm", "date_review", "job_title","diversity_inclusion", "location", "pros", "cons", "headline"])
     
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])
     
@@ -45,9 +46,10 @@ def establish_database() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray
 def main():
     X_train, X_test, y_train, y_test = establish_database()
     
-    explore(X_train, X_test, y_train, y_test)
+    # explore(X_train, X_test, y_train, y_test)
+    trainAndEvaluate(X_train, X_test, y_train, y_test)
 
-    
+
 
 
 if __name__ == '__main__':
