@@ -1,3 +1,4 @@
+from util import printWithPadding
 import pandas as pd
 import numpy as np
 from pandas.api.types import is_numeric_dtype
@@ -8,13 +9,14 @@ import seaborn as sns
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from util import printWithPadding
 
-def explore(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
+
+def explore(X_train: pd.DataFrame, X_test: pd.DataFrame,
+            y_train: pd.Series, y_test: pd.Series) -> None:
     ''' Explores the data for phase 2 '''
     print(y_test.describe())
     X = pd.concat([X_train, X_test])
-    y = pd.concat([y_train, y_test]) 
+    y = pd.concat([y_train, y_test])
 
     for col in X.columns:
         printWithPadding(col, qty=80)
@@ -22,16 +24,26 @@ def explore(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_t
         print("Type: ", X[col].dtype)
         print("Unique values: ", X[col].nunique())
         null = X[col].isnull().sum()
-        print("Null values: ", null, "(", round(null / X.shape[0] * 100, 2), "%)")
+        print(
+            "Null values: ",
+            null,
+            "(",
+            round(
+                null /
+                X.shape[0] *
+                100,
+                2),
+            "%)")
 
         # Measures corr and covar for the numeric columns that we care about
         if is_numeric_dtype(X[col]) and col != "current":
             printWithPadding("Column data", qty=16)
             print("Correlation: ", round(X[col].corr(y), 2))
             print("Covariance: ", round(X[col].cov(y), 2))
-        
+
     visualize_employmentstat(X, y)
     visualize_numeric(X, y)
+
 
 def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
     ''' See distribution of reviews by employment status at the time of review '''
@@ -59,10 +71,13 @@ def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
     plt.xlabel("Employment Status")
     plt.ylabel("Count")
     plt.xticks(rotation=45, ha="right")
-    sns.barplot(x=X['current'].value_counts().index, y=X['current'].value_counts())
+    sns.barplot(
+        x=X['current'].value_counts().index,
+        y=X['current'].value_counts())
     plt.subplots_adjust(bottom=.25, left=.15)
     plt.show()
     plt.close(fig)
+
 
 def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
 
@@ -76,7 +91,7 @@ def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
             sns.histplot(X[col])
             plt.show()
             plt.close(fig)
-            
+
             fig2 = plt.figure(figsize=(10, 10))
             plt.title("Boxplot distribution of " + col)
             plt.xlabel(col)
@@ -84,4 +99,3 @@ def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
             sns.boxplot(x=X[col], y=y)
             plt.show()
             plt.close(fig2)
-

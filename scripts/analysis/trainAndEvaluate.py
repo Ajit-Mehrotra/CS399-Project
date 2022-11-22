@@ -1,3 +1,4 @@
+from util import printWithPadding
 import pandas as pd
 import numpy as np
 
@@ -11,9 +12,10 @@ from sklearn.metrics import r2_score, mean_squared_error, classification_report
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-from util import printWithPadding
 
-def trainAndEvaluate(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
+
+def trainAndEvaluate(X_train: pd.DataFrame, X_test: pd.DataFrame,
+                     y_train: pd.Series, y_test: pd.Series) -> None:
     test_lr(X_train, X_test, y_train, y_test)
     test_knn(X_train, X_test, y_train, y_test)
     test_dt(X_train, X_test, y_train, y_test)
@@ -21,7 +23,8 @@ def trainAndEvaluate(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Se
     test_nb(X_train, X_test, y_train, y_test)
 
 
-def test_lr(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
+def test_lr(X_train: pd.DataFrame, X_test: pd.DataFrame,
+            y_train: pd.Series, y_test: pd.Series) -> None:
     model = LinearRegression()
     model.fit(X_train, y_train)
 
@@ -31,7 +34,8 @@ def test_lr(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_t
     print("MSqE: ", mean_squared_error(y_test, results))
 
 
-def test_knn(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
+def test_knn(X_train: pd.DataFrame, X_test: pd.DataFrame,
+             y_train: pd.Series, y_test: pd.Series) -> None:
     model = KNeighborsClassifier()
     model.fit(X_train, y_train)
 
@@ -40,7 +44,8 @@ def test_knn(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_
     print(classification_report(y_test, results))
 
 
-def test_dt(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
+def test_dt(X_train: pd.DataFrame, X_test: pd.DataFrame,
+            y_train: pd.Series, y_test: pd.Series) -> None:
     model = DecisionTreeClassifier()
     model.fit(X_train, y_train)
 
@@ -49,7 +54,8 @@ def test_dt(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_t
     print(classification_report(y_test, results))
 
 
-def test_rf(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
+def test_rf(X_train: pd.DataFrame, X_test: pd.DataFrame,
+            y_train: pd.Series, y_test: pd.Series) -> None:
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
 
@@ -58,11 +64,11 @@ def test_rf(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_t
     print(classification_report(y_test, results))
 
 
-def test_nb(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
+def test_nb(X_train: pd.DataFrame, X_test: pd.DataFrame,
+            y_train: pd.Series, y_test: pd.Series) -> None:
     model = GaussianNB()
     model.fit(X_train, y_train)
 
     printWithPadding("Guassian Naive Bayes")
     results = model.predict(X_test)
     print(classification_report(y_test, results))
-
