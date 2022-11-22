@@ -1,6 +1,5 @@
 from util import printWithPadding
 import pandas as pd
-import numpy as np
 from pandas.api.types import is_numeric_dtype
 
 import matplotlib.pyplot as plt
