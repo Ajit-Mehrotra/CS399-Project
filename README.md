@@ -7,10 +7,14 @@
 ├── README.md
 ├── scripts
 │   ├── main.py
+|   ├── fetch.py
+|   ├── util.py
 │   ├── preprocessing
-│   │   ├── read_data.py
+│   │   ├── data_management.py
 │   │   ├── split.py
 │   │   └── refactor.py
+|   ├── analysis
+│   │   └── explore.py
 ├── data
 │   ├── glassdoor_reviews.csv (raw data)
 │   ├── GDR_Refactored_Train.csv (refactored data, dropped Non-US, training set)
