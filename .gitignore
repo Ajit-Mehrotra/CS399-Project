@@ -4,3 +4,5 @@ __pycache__
 /data/**/*
 # No need to have on github
 /fileserver/main.exe
+# no need
+/scripts.zip

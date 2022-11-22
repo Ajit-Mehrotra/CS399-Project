@@ -78,6 +78,7 @@ def tokenize(data: pd.DataFrame) -> pd.DataFrame:
                 return 1  
             else: 
                 return 0 
+        return 0 # Default return value
 
     data['positive_headline'] = data.apply(lambda row: list_of_strings(row['headline']), axis=1) 
 

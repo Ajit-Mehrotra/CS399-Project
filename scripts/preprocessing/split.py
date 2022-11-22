@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
 
-def split_data(data: pd.DataFrame, ratio: float, folder_path: list[str], seed=42) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def split_data(data: pd.DataFrame, ratio: float, folder_path: list[str], seed=42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """split the dataset based on the split ratio. Used for initial setup."""
 
     rating = data['overall_rating']
@@ -27,7 +27,7 @@ def split_data(data: pd.DataFrame, ratio: float, folder_path: list[str], seed=42
 
     return x_train, x_test, y_train, y_test
     
-def split_train_test(train: pd.DataFrame, test: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def split_train_test(train: pd.DataFrame, test: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """Re-seperates the y variable from the train and test sets."""
 
     rating = train['overall_rating']

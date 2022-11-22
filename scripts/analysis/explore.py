@@ -10,9 +10,9 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 from util import printWithPadding
 
-def explore(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_test: np.ndarray) -> None:
+def explore(X_train: pd.DataFrame, X_test: pd.DataFrame, y_train: pd.Series, y_test: pd.Series) -> None:
     ''' Explores the data for phase 2 '''
-
+    print(y_test.describe())
     X = pd.concat([X_train, X_test])
     y = pd.concat([y_train, y_test]) 
 

@@ -12,7 +12,8 @@ from preprocessing.transformAndScale import codeify
 from analysis.explore import explore
 from analysis.trainAndEvaluate import trainAndEvaluate
 
-def process() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+
+def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     ''' Initialization for data processing, only run when needed '''
 
     data = read_data(['data', 'glassdoor_reviews.csv'])
@@ -26,7 +27,8 @@ def process() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     
     return X_train, X_test, y_train, y_test
 
-def establish_database() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+# returns 2 dataframes and 2 float64 series
+def establish_database() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     ''' Verify if the database exists, if not, create it '''
     
     if not os.path.exists(os.path.join('data', 'glassdoor_reviews.csv')):
