@@ -27,7 +27,6 @@ def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     
     return X_train, X_test, y_train, y_test
 
-# returns 2 dataframes and 2 float64 series
 def establish_database() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     ''' Verify if the database exists, if not, create it '''
     
