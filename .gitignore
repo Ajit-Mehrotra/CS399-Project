@@ -6,3 +6,5 @@ __pycache__
 /fileserver/main.exe
 # no need
 /scripts.zip
+.idea
+scripts/data/**/*

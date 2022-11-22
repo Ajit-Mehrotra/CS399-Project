@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 
 def codeify(data: pd.DataFrame) -> pd.DataFrame:

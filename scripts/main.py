@@ -5,7 +5,6 @@ from preprocessing.clean import remove_non_us, fill_na, column_droppage, remove_
 from preprocessing.split import split_data, split_train_test
 from preprocessing.data_management import read_data
 import os
-import numpy as np
 import pandas as pd
 # Ignores copy warnings on working code, python is just being annoying
 pd.options.mode.chained_assignment = None  # default='warn'

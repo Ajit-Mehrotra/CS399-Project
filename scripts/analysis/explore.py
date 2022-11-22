@@ -1,6 +1,5 @@
-from util import printWithPadding
+from scripts.util import printWithPadding
 import pandas as pd
-import numpy as np
 from pandas.api.types import is_numeric_dtype
 
 import matplotlib.pyplot as plt
@@ -67,6 +66,7 @@ def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
 
     # See distribution of data in current column
     fig = plt.figure(figsize=(10, 10))
+    sns.set_theme(style="whitegrid", palette="pastel")
     plt.title("Distribution of Reviews by Employment Status")
     plt.xlabel("Employment Status")
     plt.ylabel("Count")
@@ -84,14 +84,16 @@ def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
     for col in X.columns:
         if is_numeric_dtype(X[col]) and col != "current":
             print("Visualizing ", col)
+            sns.set_theme(style="whitegrid", palette="pastel")
             fig = plt.figure(figsize=(10, 10))
             plt.title("Histogram distribution of " + col)
             plt.xlabel(col)
             plt.ylabel("Count")
-            sns.histplot(X[col])
+            sns.histplot(X[col], bins=5, discrete=True, shrink=0.8, kde=True)
+            sns.despine(left=True)
+            plt.tight_layout()
             plt.show()
             plt.close(fig)
-
             fig2 = plt.figure(figsize=(10, 10))
             plt.title("Boxplot distribution of " + col)
             plt.xlabel(col)
@@ -99,3 +101,4 @@ def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
             sns.boxplot(x=X[col], y=y)
             plt.show()
             plt.close(fig2)
+

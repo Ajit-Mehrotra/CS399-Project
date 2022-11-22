@@ -1,6 +1,5 @@
 from util import printWithPadding
 import pandas as pd
-import numpy as np
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LinearRegression
