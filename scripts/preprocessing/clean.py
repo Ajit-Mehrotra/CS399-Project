@@ -43,3 +43,10 @@ def fill_na(data: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
         mode_imputer = SimpleImputer(strategy='median')
         data[col] = mode_imputer.fit_transform(data[[col]])
     return data
+
+def drop_dupes(data: pd.DataFrame) -> pd.DataFrame:
+    """Drop duplicate rows from data."""
+
+    print("Dropping duplicate rows")
+    data.drop_duplicates(inplace=True)
+    return data

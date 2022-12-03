@@ -8,8 +8,8 @@ def split_data(data: pd.DataFrame, ratio: float,
                folder_path: list[str], seed=42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """split the dataset based on the split ratio. Used for initial setup."""
 
-    rating = data['overall_rating']
-    data.drop(['overall_rating'], axis=1, inplace=True)
+    rating = data['work_life_balance']
+    data.drop(['work_life_balance'], axis=1, inplace=True)
 
     # x_train, x_test, y_train, y_test = train_test_split(data, rating, test_size=ratio, random_state=seed)
 
@@ -36,12 +36,12 @@ def split_train_test(train: pd.DataFrame,
                      test: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """Re-seperates the y variable from the train and test sets."""
 
-    rating = train['overall_rating']
-    train.drop(['overall_rating'], axis=1, inplace=True)
+    rating = train['work_life_balance']
+    train.drop(['work_life_balance'], axis=1, inplace=True)
     x_train, y_train = train, rating
 
-    rating = test['overall_rating']
-    test.drop(['overall_rating'], axis=1, inplace=True)
+    rating = test['work_life_balance']
+    test.drop(['work_life_balance'], axis=1, inplace=True)
     x_test, y_test = test, rating
 
     return x_train, x_test, y_train, y_test

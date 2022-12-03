@@ -1,12 +1,14 @@
 import pandas as pd
-
+from sklearn.preprocessing import OrdinalEncoder
 
 def codeify(data: pd.DataFrame) -> pd.DataFrame:
     """Convert specific columns in data to numeric."""
 
     data = codeify_current(data)
     data = codeify_ovrs(data)
-    data = tokenize(data)
+    data = encode_firms(data)
+
+    # data = tokenize(data)
 
     return data
 
@@ -86,5 +88,13 @@ def tokenize(data: pd.DataFrame) -> pd.DataFrame:
     data['positive_headline'] = data.apply(
         lambda row: list_of_strings(
             row['headline']), axis=1)
+
+    return data
+
+def encode_firms(data: pd.DataFrame) -> pd.DataFrame:
+    ''' Turn firms to ints '''
+
+    enc = OrdinalEncoder()
+    data[['firm']] = enc.fit_transform(data[['firm']])
 
     return data

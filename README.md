@@ -16,7 +16,8 @@
 │   │   └── clean.py
 |   ├── analysis
 |   │   ├── explore.py
-│   │   └── trainAndEvaluate.py
+│   │   ├── trainAndEvaluate.py
+|   |   └── finetuneAndEvaluate.py
 ├── data
 │   ├── glassdoor_reviews.csv (raw data)
 │   ├── GDR_Refactored_Train.csv (refactored data, dropped Non-US, training set)

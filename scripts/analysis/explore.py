@@ -1,4 +1,4 @@
-from scripts.util import printWithPadding
+from util import printWithPadding
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 
@@ -89,7 +89,7 @@ def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
             plt.title("Histogram distribution of " + col)
             plt.xlabel(col)
             plt.ylabel("Count")
-            sns.histplot(X[col], bins=5, discrete=True, shrink=0.8, kde=True)
+            sns.histplot(X[col], bins="5", discrete=True, shrink=0.8, kde=True)
             sns.despine(left=True)
             plt.tight_layout()
             plt.show()
