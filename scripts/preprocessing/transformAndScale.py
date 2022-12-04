@@ -40,7 +40,7 @@ def codeify_current(data: pd.DataFrame) -> pd.DataFrame:
     # data['current'] = data['current'].map(employment_status)
 
     current_dummies = pd.get_dummies(data['current'])
-    data = pd.concat([data, current_dummies], axis=1) from sklearn import preprocessing
+    data = pd.concat([data, current_dummies], axis=1) 
 
 
     # make years its own column and 

@@ -8,6 +8,7 @@ from analysis.finetuneAndEvaluate import run_model
 from preprocessing.NLP import get_tokenized_data
 import os
 import pandas as pd
+import numpy as np
 # Ignores copy warnings on working code, python is just being annoying
 pd.options.mode.chained_assignment = None   
 
@@ -15,19 +16,22 @@ pd.options.mode.chained_assignment = None
 def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     ''' Initialization for data processing, only run when needed '''
 
+    np.random.seed(42)
+
     data = read_data(['data', 'glassdoor_reviews.csv'], delimiter='\t')
     data = remove_non_us(data)
     data = drop_dupes(data)
     data = remove_na(data, ["work_life_balance"])
-    data = codeify(data)
-    data = fill_na(data, ["culture_values",
-                   "career_opp", "comp_benefits", "senior_mgmt"])
-    data = column_droppage(data, ["firm", "date_review", "job_title",
-                           "diversity_inclusion", "location", "overall_rating"])
 
     # Don't run, takes hours!
     # The dataset provided already has it ran
     # data = get_tokenized_data(data)
+
+    data = codeify(data)
+    data = fill_na(data, ["culture_values",
+                   "career_opp", "comp_benefits", "senior_mgmt"])
+    data = column_droppage(data, ["firm", "date_review", "job_title",
+                           "diversity_inclusion", "location", "overall_rating", "tokenized_pros", "tokenized_cons", "tokenized_headline", "current"])
 
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])
 
