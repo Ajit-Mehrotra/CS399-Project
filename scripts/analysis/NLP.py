@@ -37,28 +37,85 @@ nltk.download('wordnet')
 nltk.download('vader_lexicon')
 nltk.download('punkt')
 
+def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:  
+    # Tokenize the data
+    columns = ["pros", "cons", "headline"]
+    data = data.dropna(subset=['work_life_balance'])
 
-df = pd.read_csv("../../../Documents/Github/CS399_Project/data/glassdoor_reviews.csv")
+    data[columns] = data[columns].fillna("NA")
+    data[columns] = data[columns].astype(str)
+
+      # Preprocessing text routines 
+    stemmer = WordNetLemmatizer()
+    tok = TreebankWordTokenizer()
+
+    nltk.download('stopwords')
+    en_stop = set(nltk.corpus.stopwords.words('english')) # common english stop words
+    to_be_removed = list(en_stop) + list(punctuation)
+
+    # this part gets ran to get the words that are commonly seen together 
+    pretrained_vectors = FastText(language='en') # learning of word representation and sentence classification
+    pretrained_vocab = vocab(pretrained_vectors.stoi, min_freq=0) # defines vocab object that will be used to numericalize the text/field
+
+    # token objects 
+    unk_token = ""
+    unk_index = 0
+    pad_token = ''
+    pad_index = 1
+    pretrained_vocab.insert_token("",unk_index)
+
+    pretrained_vocab.set_default_index(unk_index)
+    pretrained_embeddings = pretrained_vectors.vectors # get vocab vector for numeric thres. 
+    pretrained_embeddings = torch.cat((torch.zeros(2,pretrained_embeddings.shape[1]),pretrained_embeddings))
+    vocab_stoi = pretrained_vocab.get_stoi()
+
+    tok = TreebankWordTokenizer()
+
+    all_sentences = data[['pros','cons']].applymap(lambda x: nltk.word_tokenize(preprocess_transformers(x, full_process=False)))
+    all_sentences = all_sentences.melt().value.to_list()
+    
+    # which words commonly co-occur (phrases within our strings)
+    phrases = Phrases(all_sentences, delimiter='oo' ,threshold=100)
+    phraser = Phraser(phrases)
 
 
-columns = ["pros", "cons", "headline"]
-df = df.dropna(subset=['work_life_balance'])
+    test = False
+    if test:
+        tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-tiny')
+    else:
+        tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
+    transform_text(data)
+    return 
 
-#types_str = df.select_dtypes(include='object').columns
-df[columns] = df[columns].fillna("NA")
+# perform token transformations on the pros, cons, and headline columns
+def transform_text(data: pd.DataFrame) -> pd.DataFrame:
+    # preprocess the columns in order to tokenize them
+    data['headline'] = data['headline'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
+    data['pros'] = data['pros'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
+    data['cons'] = data['cons'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
 
+    # numeric tokenization
+    data['headline'] = data['headline'].progress_apply(lambda x: ' '.join(phraser[word_tokenize(x)]))
+    data['pros'] = data['pros'].progress_apply(lambda x: ' '.join(phraser[word_tokenize(x)]))
+    data['cons'] = data['cons'].progress_apply(lambda x: ' '.join(phraser[word_tokenize(x)]))
 
-df[columns] = df[columns].astype(str)
+    # padding is used in the numeric tokenization in order to make the tensors the same size (batching)
+    pad = True
+    # We use different lengths for each field, because the headlines are usually much shorter than the pros and cons
+    data['tokenized_headline'] = data['headline'].progress_apply(lambda x : tokenize_pad_numericalize(x, stoi, tok, pad, max_length=20))
+    data['tokenized_pros'] = data['pros'].progress_apply(lambda x : tokenize_pad_numericalize(x, stoi, tok, pad, max_length=80))
+    data['tokenized_cons'] = data['cons'].progress_apply(lambda x : tokenize_pad_numericalize(x, stoi, tok, pad, max_length=100))
 
+    # Preprocess text for transformers
+    data['tokenized_headline']=data.apply(lambda row: str_replace_tokens(row['headline'], row['tokenized_headline']), axis=1)
+    data['tokenized_pros']=data.apply(lambda row: str_replace_tokens(row['pros'], row['tokenized_pros']), axis=1)
+    data['tokenized_cons']=data.apply(lambda row: str_replace_tokens(row['cons'], row['tokenized_cons']), axis=1)
 
-# Preprocessing text routines 
-stemmer = WordNetLemmatizer()
-tok = TreebankWordTokenizer()
+    # Save data as csv file
+    data.drop(['pros','cons','headline'], axis=1, inplace=True)
+    data.to_csv("tokenized_data2", sep='\t', encoding='utf-8')
 
-nltk.download('stopwords')
-en_stop = set(nltk.corpus.stopwords.words('english')) # common english stop words
-to_be_removed = list(en_stop) + list(punctuation)
 
 # Preprocess text for transformers
 def preprocess_transformers(string, full_process=True):
@@ -83,12 +140,11 @@ def preprocess_transformers(string, full_process=True):
             string = ' '.join(tokens)
         return string
 
-
-
-# Run me 
+# numeric tokenization
 def tokenize_pad_numericalize(entry, vocab_stoi, tok, pad=True, max_length=100):
+
     if pad :
-        text = [ vocab_stoi[token] if token in vocab_stoi else vocab_stoi[''] for token in tok.tokenize(entry)]
+        text = [vocab_stoi[token] if token in vocab_stoi else vocab_stoi[''] for token in tok.tokenize(entry)]
         padded_text = None
         l = len(text)
         if l < max_length:   padded_text = text + [ vocab_stoi[''] for i in range(len(text), max_length) ] 
@@ -99,104 +155,8 @@ def tokenize_pad_numericalize(entry, vocab_stoi, tok, pad=True, max_length=100):
         text = [ vocab_stoi[token] if token in vocab_stoi else vocab_stoi[''] for token in tok.tokenize(entry)]
         return text
 
-# this part gets ran to get the words that are commonly seen together 
-pretrained_vectors = FastText(language='en')
-pretrained_vocab = vocab(pretrained_vectors.stoi, min_freq=0)
-
-unk_token = ""
-unk_index = 0
-pad_token = ''
-pad_index = 1
-pretrained_vocab.insert_token("",unk_index)
-#pretrained_vocab.insert_token("",pad_index)
-
-pretrained_vocab.set_default_index(unk_index)
-pretrained_embeddings = pretrained_vectors.vectors
-
-
-pretrained_embeddings = torch.cat((torch.zeros(2,pretrained_embeddings.shape[1]),pretrained_embeddings))
-stoi = pretrained_vocab.get_stoi()
-tok = TreebankWordTokenizer()
-
-all_sentences = df[['pros','cons']].applymap(lambda x: nltk.word_tokenize(preprocess_transformers(x, full_process=False)))
-all_sentences = all_sentences.melt().value.to_list()
-
-phrases = Phrases(all_sentences, delimiter='oo' ,threshold=100)
-phraser = Phraser(phrases)
-
-
-test = False
-if test:
-    tokenizer = AutoTokenizer.from_pretrained('prajjwal1/bert-tiny')
-else:
-    tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-
-
-# Data maker for the transfomer
-def make_inputs(df,feature):
-    minutes_transformers = df[['date_review',feature]].set_index('date_review').copy()
-    # standardize text
-    minutes_transformers['sentence_treated'] = minutes_transformers[feature].apply(lambda x: preprocess_transformers(x, full_process=False))
-    # Apply phraser
-    minutes_transformers['sentence_treated'] = minutes_transformers['sentence_treated'].apply(lambda x: ' '.join(phraser[nltk.word_tokenize(x)]))
-    # Set max length
-    max_len = minutes_transformers['sentence_treated'].apply(lambda x:len(nltk.word_tokenize(x))).quantile(0.95)
-    max_len = np.min((max_len,200)).astype(int)
-
-    encoded_corpus = tokenizer(text=minutes_transformers['sentence_treated'].tolist(),
-                            add_special_tokens=True,
-                            padding='max_length',
-                            truncation='longest_first',
-                            max_length=max_len,
-                            return_attention_mask=True)
-                            
-    print('The maximum sentence length for the transformers input is', max_len)
-    input_ids      = encoded_corpus['input_ids']
-    attention_mask = encoded_corpus['attention_mask']
-    return input_ids, attention_mask
-
-# pros and cons to feed to the transformer
-input_pros, mask_pros = make_inputs(df,'pros')
-input_cons, mask_cons = make_inputs(df,'cons')
-
-
-inputs = input_pros, input_cons, mask_pros, mask_cons
-
-
-labels = df.work_life_balance.astype(int).to_numpy() - 1
-
-# Run me
-#We use the same function for transformers and for LSTMs
-df['headline'] = df['headline'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
-df['pros'] = df['pros'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
-df['cons'] = df['cons'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
-
-df['headline'] = df['headline'].progress_apply(lambda x: ' '.join(phraser[word_tokenize(x)]))
-df['pros'] = df['pros'].progress_apply(lambda x: ' '.join(phraser[word_tokenize(x)]))
-df['cons'] = df['cons'].progress_apply(lambda x: ' '.join(phraser[word_tokenize(x)]))
-
-
-# Run me
-pad = True
-# We use different lengths for each field, because the headlines are usually much shorter than the pros and cons
-df['tokenized_headline'] = df['headline'].progress_apply(lambda x : tokenize_pad_numericalize(x, stoi, tok, pad, max_length=20))
-df['tokenized_pros'] = df['pros'].progress_apply(lambda x : tokenize_pad_numericalize(x, stoi, tok, pad, max_length=80))
-df['tokenized_cons'] = df['cons'].progress_apply(lambda x : tokenize_pad_numericalize(x, stoi, tok, pad, max_length=100))
-
-
-pd.options.display.max_rows = 999
-pd.options.display.max_columns = 999
-pd.options.display.max_colwidth = 300
-
-
-
-torch.Tensor(short.iloc[1, -4]).int()
-
-
-tokenizer.decode(torch.Tensor(short.iloc[1, -4]).int())
-
-
-def imtrying(row1, row2):
+# replace the numerical scores within the tokenized data columns to the corresponding token string 
+def str_replace_tokens(row1, row2):
     list_tokens = []
     if len(row1.split()) < len(row2):
         for idx, val in enumerate(row1.split()):
@@ -208,23 +168,6 @@ def imtrying(row1, row2):
                 list_tokens.append(row1[idx])
     return " ".join(list_tokens)
 
-
-s = "very friendly and welcoming to new staff easy going ethic"
-s2 = [226, 3378, 8, 17583, 12, 47, 1154, 2204, 667, 24375, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-
-imtrying(s, s2)
-
-
-df['tokenized_headline']=df.apply(lambda row: imtrying(row['headline'], row['tokenized_headline']), axis=1)
-df['tokenized_pros']=df.apply(lambda row: imtrying(row['pros'], row['tokenized_pros']), axis=1)
-df['tokenized_cons']=df.apply(lambda row: imtrying(row['cons'], row['tokenized_cons']), axis=1)
-
-
-df.drop(['pros','cons','headline'], axis=1, inplace=True)
-
-
-df.to_csv("tokenized_data2", sep='\t', encoding='utf-8')
 
 
 
