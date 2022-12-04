@@ -3,11 +3,11 @@ import pandas as pd
 import pickle
 
 
-def read_data(file_path: list[str]) -> pd.DataFrame:
+def read_data(file_path: list[str], delimiter=",") -> pd.DataFrame:
     """Read the data from the named csv file."""
 
     print("Reading data from: ", os.path.join(*file_path))
-    return pd.read_csv(os.path.join(*file_path), delimiter="\t")
+    return pd.read_csv(os.path.join(*file_path), delimiter=delimiter, index_col=0)
 
 
 def write_model(model, file_path: list[str]) -> None:

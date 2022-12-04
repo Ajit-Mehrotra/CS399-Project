@@ -15,7 +15,7 @@ pd.options.mode.chained_assignment = None
 def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     ''' Initialization for data processing, only run when needed '''
 
-    data = read_data(['data', 'glassdoor_reviews.csv'])
+    data = read_data(['data', 'glassdoor_reviews.csv'], delimiter='\t')
     data = remove_non_us(data)
     data = drop_dupes(data)
     data = remove_na(data, ["work_life_balance"])
@@ -23,9 +23,10 @@ def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     data = fill_na(data, ["culture_values",
                    "career_opp", "comp_benefits", "senior_mgmt"])
     data = column_droppage(data, ["firm", "date_review", "job_title",
-                           "diversity_inclusion", "location", "pros", "cons", "headline", "overall_rating"])
+                           "diversity_inclusion", "location", "overall_rating"])
 
-    # only use once
+    # Don't run, takes hours!
+    # The dataset provided already has it ran
     # data = get_tokenized_data(data)
 
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])

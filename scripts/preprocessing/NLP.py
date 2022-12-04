@@ -24,20 +24,19 @@ from string import punctuation
 import re, random, pathlib
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-tqdm.pandas()
 import random
 
 from transformers import RobertaModel, RobertaTokenizer, get_linear_schedule_with_warmup, AutoTokenizer, AutoModel
 
-
-# nltk requirements for words 
-nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('wordnet')
-nltk.download('vader_lexicon')
-nltk.download('punkt')
-
-def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:  
+def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:
+    tqdm.pandas()
+    # nltk requirements for words 
+    nltk.download('stopwords')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('wordnet')
+    nltk.download('vader_lexicon')
+    nltk.download('punkt')
+    
     # Tokenize the data
     columns = ["pros", "cons", "headline"]
     data = data.dropna(subset=['work_life_balance'])
