@@ -13,3 +13,5 @@ def fetch(file_path: list[str]) -> None:
         os.makedirs(os.path.join(*file_path[:-1]))
     open(os.path.join(*file_path), 'wb').write(r.content)
     print("Download complete")
+
+fetch(['data', 'glassdoor_reviews.csv'])

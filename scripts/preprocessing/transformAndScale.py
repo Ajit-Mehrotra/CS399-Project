@@ -1,6 +1,9 @@
 import pandas as pd
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import LabelEncoder
+import nltk
+from nltk.corpus import opinion_lexicon
+from nltk.tokenize import word_tokenize
 
 def codeify(data: pd.DataFrame) -> pd.DataFrame:
     """Convert specific columns in data to numeric."""
@@ -111,3 +114,40 @@ def encode_firms(data: pd.DataFrame) -> pd.DataFrame:
     data[['firm']] = enc.fit_transform(data[['firm']])
 
     return data
+
+def create_lexicon_dict():
+    pos_score = 1
+    neg_score = -1
+    word_dict = {}
+
+    # Adding the positive words to the dictionary
+    for word in opinion_lexicon.positive():
+            word_dict[word] = pos_score
+
+    # Adding the negative words to the dictionary
+    for word in opinion_lexicon.negative():
+            word_dict[word] = neg_score
+    
+    return word_dict
+
+def bing_liu_score(text, word_dict):
+    sentiment_score = 0
+    score = 0
+    bag_of_words = word_tokenize(str(text).lower())
+    for word in bag_of_words:
+        if word in word_dict:
+            sentiment_score += word_dict[word]
+        if len(bag_of_words) == 0:
+            score = sentiment_score / 1
+        else:
+            score = sentiment_score / len(bag_of_words)
+    return score
+
+def codeify_get_bing_scores(data: pd.DataFrame) -> pd.DataFrame: 
+    nltk.download('opinion_lexicon')
+    nltk.download('punkt')
+    columns = ['tokenized_headline', 'tokenized_pros', 'tokenized_cons']
+    data.dropna(subset=columns, inplace = True)
+    data[['bing_headline', 'bing_pros', 'bing_cons']] = data[columns].apply(bing_liu_score)
+
+
