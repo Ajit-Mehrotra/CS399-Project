@@ -5,6 +5,7 @@ from preprocessing.clean import remove_non_us, fill_na, column_droppage, remove_
 from preprocessing.split import split_data, split_train_test
 from preprocessing.data_management import read_data
 from analysis.finetuneAndEvaluate import run_model
+from preprocessing.NLP import get_tokenized_data
 import os
 import pandas as pd
 # Ignores copy warnings on working code, python is just being annoying
@@ -23,6 +24,9 @@ def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
                    "career_opp", "comp_benefits", "senior_mgmt"])
     data = column_droppage(data, ["firm", "date_review", "job_title",
                            "diversity_inclusion", "location", "pros", "cons", "headline", "overall_rating"])
+
+    # only use once
+    # data = get_tokenized_data(data)
 
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])
 

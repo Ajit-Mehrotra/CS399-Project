@@ -45,10 +45,6 @@ def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:
     data[columns] = data[columns].fillna("NA")
     data[columns] = data[columns].astype(str)
 
-      # Preprocessing text routines 
-    stemmer = WordNetLemmatizer()
-    tok = TreebankWordTokenizer()
-
     nltk.download('stopwords')
     en_stop = set(nltk.corpus.stopwords.words('english')) # common english stop words
     to_be_removed = list(en_stop) + list(punctuation)
@@ -67,11 +63,13 @@ def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:
     pretrained_vocab.set_default_index(unk_index)
     pretrained_embeddings = pretrained_vectors.vectors # get vocab vector for numeric thres. 
     pretrained_embeddings = torch.cat((torch.zeros(2,pretrained_embeddings.shape[1]),pretrained_embeddings))
-    vocab_stoi = pretrained_vocab.get_stoi()
+    stoi = pretrained_vocab.get_stoi()
 
+    # Preprocessing text routines 
+    stemmer = WordNetLemmatizer()
     tok = TreebankWordTokenizer()
 
-    all_sentences = data[['pros','cons']].applymap(lambda x: nltk.word_tokenize(preprocess_transformers(x, full_process=False)))
+    all_sentences = data[['pros','cons']].applymap(lambda x: nltk.word_tokenize(preprocess_transformers(x, stemmer, en_stop, full_process=False)))
     all_sentences = all_sentences.melt().value.to_list()
     
     # which words commonly co-occur (phrases within our strings)
@@ -85,15 +83,10 @@ def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:
     else:
         tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
-    transform_text(data)
-    return 
-
-# perform token transformations on the pros, cons, and headline columns
-def transform_text(data: pd.DataFrame) -> pd.DataFrame:
     # preprocess the columns in order to tokenize them
-    data['headline'] = data['headline'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
-    data['pros'] = data['pros'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
-    data['cons'] = data['cons'].progress_apply(lambda x : preprocess_transformers(x, full_process=False))
+    data['headline'] = data['headline'].progress_apply(lambda x : preprocess_transformers(x, stemmer, en_stop, full_process=False))
+    data['pros'] = data['pros'].progress_apply(lambda x : preprocess_transformers(x, stemmer, en_stop, full_process=False))
+    data['cons'] = data['cons'].progress_apply(lambda x : preprocess_transformers(x, stemmer, en_stop, full_process=False))
 
     # numeric tokenization
     data['headline'] = data['headline'].progress_apply(lambda x: ' '.join(phraser[word_tokenize(x)]))
@@ -116,9 +109,10 @@ def transform_text(data: pd.DataFrame) -> pd.DataFrame:
     data.drop(['pros','cons','headline'], axis=1, inplace=True)
     data.to_csv("tokenized_data2", sep='\t', encoding='utf-8')
 
+    return data
 
 # Preprocess text for transformers
-def preprocess_transformers(string, full_process=True):
+def preprocess_transformers(string, stemmer, en_stop, full_process=True) -> str:
         # Remove all the special characters
         string = re.sub(r'\W', ' ', str(string))
         # remove all single characters
@@ -141,8 +135,8 @@ def preprocess_transformers(string, full_process=True):
         return string
 
 # numeric tokenization
-def tokenize_pad_numericalize(entry, vocab_stoi, tok, pad=True, max_length=100):
-
+def tokenize_pad_numericalize(entry, vocab_stoi, tok, pad=True, max_length=100) -> list[int]:
+    
     if pad :
         text = [vocab_stoi[token] if token in vocab_stoi else vocab_stoi[''] for token in tok.tokenize(entry)]
         padded_text = None
@@ -156,7 +150,7 @@ def tokenize_pad_numericalize(entry, vocab_stoi, tok, pad=True, max_length=100):
         return text
 
 # replace the numerical scores within the tokenized data columns to the corresponding token string 
-def str_replace_tokens(row1, row2):
+def str_replace_tokens(row1, row2) -> str:
     list_tokens = []
     if len(row1.split()) < len(row2):
         for idx, val in enumerate(row1.split()):
