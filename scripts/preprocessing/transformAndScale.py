@@ -18,25 +18,30 @@ def codeify_current(data: pd.DataFrame) -> pd.DataFrame:
 
     print("Codeifying Employment Status")
 
-    employment_status = {
-        "Current Employee": 0,
-        "Current Employee, less than 1 year": 1,
-        "Current Employee, more than 1 year": 2,
-        "Current Employee, more than 3 years": 3,
-        "Current Employee, more than 5 years": 4,
-        "Current Employee, more than 8 years": 5,
-        "Current Employee, more than 10 years": 6,
-        "Former Employee": 7,
-        "Former Employee, less than 1 year": 8,
-        "Former Employee, more than 1 year": 9,
-        "Former Employee, more than 3 years": 10,
-        "Former Employee, more than 5 years": 11,
-        "Former Employee, more than 8 years": 12,
-        "Former Employee, more than 10 years": 13,
-    }
+    # employment_status = {
+    #     "Current Employee": 0,
+    #     "Current Employee, less than 1 year": 1,
+    #     "Current Employee, more than 1 year": 2,
+    #     "Current Employee, more than 3 years": 3,
+    #     "Current Employee, more than 5 years": 4,
+    #     "Current Employee, more than 8 years": 5,
+    #     "Current Employee, more than 10 years": 6,
+    #     "Former Employee": 7,
+    #     "Former Employee, less than 1 year": 8,
+    #     "Former Employee, more than 1 year": 9,
+    #     "Former Employee, more than 3 years": 10,
+    #     "Former Employee, more than 5 years": 11,
+    #     "Former Employee, more than 8 years": 12,
+    #     "Former Employee, more than 10 years": 13,
+    # }
 
-    data['current'] = data['current'].map(employment_status)
+    # data['current'] = data['current'].map(employment_status)
 
+    current_dummies = pd.get_dummies(data['current'])
+    data = pd.concat([data, current_dummies], axis=1) 
+
+    # make years its own column and 
+    # data['current'] = data['current'].apply(lambda x: 1 if x == "Current Employee" else 0)
     return data
 
 

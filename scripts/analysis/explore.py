@@ -46,7 +46,7 @@ def explore(X_train: pd.DataFrame, X_test: pd.DataFrame,
 
 def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
     ''' See distribution of reviews by employment status at the time of review '''
-
+    
     employment_status = {
         "Current Employee (Duration Unspecified)": 0,
         "Current Employee, less than 1 year": 1,
