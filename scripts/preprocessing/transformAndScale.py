@@ -1,10 +1,12 @@
 import pandas as pd
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import LabelEncoder
 
 def codeify(data: pd.DataFrame) -> pd.DataFrame:
     """Convert specific columns in data to numeric."""
 
     data = codeify_current(data)
+    data = codeify_numerics(data)
     data = codeify_ovrs(data)
     data = encode_firms(data)
 
@@ -38,12 +40,18 @@ def codeify_current(data: pd.DataFrame) -> pd.DataFrame:
     # data['current'] = data['current'].map(employment_status)
 
     current_dummies = pd.get_dummies(data['current'])
-    data = pd.concat([data, current_dummies], axis=1) 
+    data = pd.concat([data, current_dummies], axis=1) from sklearn import preprocessing
+
 
     # make years its own column and 
     # data['current'] = data['current'].apply(lambda x: 1 if x == "Current Employee" else 0)
     return data
 
+def codeify_numerics(data: pd.DataFrame) -> pd.DataFrame:
+
+    columns = ["work_life_balance", "career_opp", "comp_benefits", "senior_mgmt", "culture_values"]
+    data[columns] = data[columns].apply(LabelEncoder().fit_transform)
+    return data
 
 def codeify_ovrs(data: pd.DataFrame) -> pd.DataFrame:
     ''' Convert OVR columns to numeric. '''
