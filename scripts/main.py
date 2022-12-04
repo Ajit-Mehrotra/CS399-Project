@@ -33,16 +33,19 @@ def establish_database() -> tuple[pd.DataFrame,
                                   pd.DataFrame, pd.Series, pd.Series]:
     ''' Verify if the database exists, if not, create it '''
 
+    # Downloads and processes the database if it doesn't exist
     if not os.path.exists(os.path.join('data', 'glassdoor_reviews.csv')):
         from fetch import fetch
         fetch(['data', 'glassdoor_reviews.csv'])
         X_train, X_test, y_train, y_test = process()
         return X_train, X_test, y_train, y_test
 
+    # if it hasn't been processed, process it
     elif not os.path.exists(os.path.join('data', 'train.csv')) or not os.path.exists(os.path.join('data', 'test.csv')):
         X_train, X_test, y_train, y_test = process()
         return X_train, X_test, y_train, y_test
 
+    # if it has been processed, read it
     else:
         print("Database already exists")
         X_train, X_test, y_train, y_test = split_train_test(
