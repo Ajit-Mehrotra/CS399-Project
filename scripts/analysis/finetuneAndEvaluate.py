@@ -1,11 +1,12 @@
 from util import printWithPadding
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
+# from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.svm import SVC
+# from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
+# from sklearn.linear_model import SGDClassifier # later
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 
@@ -22,8 +23,9 @@ def run_model(X_train: pd.DataFrame, X_test: pd.DataFrame,
 def rfc(X_train: pd.DataFrame, X_test: pd.DataFrame,
                     y_train: pd.Series, y_test: pd.Series):
     model = RandomForestClassifier()
-    param_grid = {'n_estimators': [10, 50, 100, 200],
-                    'max_depth': [2, 4, 6, 8, 10]}
+    param_grid = {'n_estimators': [100, 200, 300],
+                    'max_depth': [5, 8, 10, 15],
+                    'min_samples_split': [2, 5, 10]}
     
     grid = GridSearchCV(model, param_grid, scoring='accuracy', cv=5, verbose=2)
     grid.fit(X_train, y_train)
@@ -67,5 +69,5 @@ def ensemble_models(X_train: pd.DataFrame, X_test: pd.DataFrame,
     print("Best parameters: ", grid.best_params_)
     print("Best cross-validation score: ", grid.best_score_)
     print("Best estimator: ", grid.best_estimator_)
-    
+
 
