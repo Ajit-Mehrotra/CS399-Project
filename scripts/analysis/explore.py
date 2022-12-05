@@ -80,7 +80,7 @@ def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
 
 
 def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
-
+    ''' See distribution of reviews by numeric columns '''
     for col in X.columns:
         if is_numeric_dtype(X[col]) and col != "current":
             print("Visualizing ", col)

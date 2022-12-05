@@ -17,21 +17,27 @@ def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     ''' Initialization for data processing, only run when needed '''
 
     np.random.seed(42)
-
+    
     data = read_data(['data', 'glassdoor_reviews.csv'], delimiter='\t')
+    # Drops all Non-US reviews
     data = remove_non_us(data)
+    # Drops all duplicate reviews
     data = drop_dupes(data)
+    # Drops all missing values from our response variable
     data = remove_na(data, ["work_life_balance"])
 
     # Don't run, takes hours!
     # The dataset provided already has it ran
     # data = get_tokenized_data(data)
 
+    # Processes data into stuff the models can use
     data = codeify(data)
+    # Fills missing values with the median of the column
     data = fill_na(data, ["culture_values",
                    "career_opp", "comp_benefits", "senior_mgmt"])
+    # Drops unnecessary columns
     data = column_droppage(data, ["firm", "date_review", "job_title",
-                           "diversity_inclusion", "location", "overall_rating", "tokenized_pros", "tokenized_cons", "tokenized_headline", "current"])
+                           "diversity_inclusion", "location", "overall_rating", "tokenized_pros", "tokenized_cons", "tokenized_headline"])
 
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])
 

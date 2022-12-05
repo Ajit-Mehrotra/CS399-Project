@@ -160,9 +160,3 @@ def str_replace_tokens(row1, row2) -> str:
             if val > 1000:
                 list_tokens.append(row1[idx])
     return " ".join(list_tokens)
-
-
-
-
-
-

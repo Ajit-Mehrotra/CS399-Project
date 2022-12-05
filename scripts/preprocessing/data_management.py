@@ -14,6 +14,8 @@ def write_model(model, file_path: list[str]) -> None:
     """Write the model to the named file."""
 
     print("Writing model to: ", os.path.join(*file_path))
+    if not os.path.exists(os.path.join(*file_path[:-1])):
+        os.makedirs(os.path.join(*file_path[:-1]))
     with open(os.path.join(*file_path) + ".pkl", 'wb') as f:
         pickle.dump(model, f)
 
