@@ -40,7 +40,6 @@ def graph_conf_matrix(y_test: pd.Series, y_pred: pd.Series) -> None:
     """Graphs the confusion matrix."""
 
     from sklearn.metrics import confusion_matrix
-    import seaborn as sns
     import matplotlib.pyplot as plt
 
     conf_mat = confusion_matrix(y_test, y_pred)
