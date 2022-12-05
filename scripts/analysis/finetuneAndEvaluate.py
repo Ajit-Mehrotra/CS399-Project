@@ -22,6 +22,7 @@ def run_model(X_train: pd.DataFrame, X_test: pd.DataFrame,
     # Gaussian(X_train, X_test, y_train, y_test)
     # logit_reg(X_train, X_test, y_train, y_test)
     # knn(X_train, X_test, y_train, y_test)
+    print("Done")
 
 
 def graph_importances(feature_names: list[str], importances: list[float]) -> None:
