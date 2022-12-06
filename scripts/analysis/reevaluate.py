@@ -11,11 +11,11 @@ def reevaluate(X_train: pd.DataFrame, X_test: pd.DataFrame,
         y_train: pd.Series, y_test: pd.Series) -> None:
     printWithPadding("Re-evaluating models", qty=50)
 
-    # re_rfc(X_train, X_test, y_train, y_test)
+    re_rfc(X_train, X_test, y_train, y_test)
     re_gnb(X_train, X_test, y_train, y_test)
-    # re_logit_reg(X_train, X_test, y_train, y_test)
-    # re_knn(X_train, X_test, y_train, y_test)
-    # re_dt(X_train, X_test, y_train, y_test)
+    re_logit_reg(X_train, X_test, y_train, y_test)
+    re_knn(X_train, X_test, y_train, y_test)
+    re_dt(X_train, X_test, y_train, y_test)
 
 def re_gnb(X_train: pd.DataFrame, X_test: pd.DataFrame,
         y_train: pd.Series, y_test: pd.Series) -> None:

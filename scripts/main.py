@@ -79,7 +79,7 @@ def main():
     # explore(X_train, X_test, y_train, y_test)
     # trainAndEvaluate(X_train, X_test, y_train, y_test)
 
-    run_model(X_train, X_test, y_train, y_test)
+    # run_model(X_train, X_test, y_train, y_test)
 
     reevaluate(X_train, X_test, y_train, y_test)
 
