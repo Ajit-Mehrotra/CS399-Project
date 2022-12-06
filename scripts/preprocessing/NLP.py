@@ -53,10 +53,7 @@ def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:
     pretrained_vocab = vocab(pretrained_vectors.stoi, min_freq=0) # defines vocab object that will be used to numericalize the text/field
 
     # token objects 
-    unk_token = ""
     unk_index = 0
-    pad_token = ''
-    pad_index = 1
     pretrained_vocab.insert_token("",unk_index)
 
     pretrained_vocab.set_default_index(unk_index)
@@ -140,9 +137,12 @@ def tokenize_pad_numericalize(entry, vocab_stoi, tok, pad=True, max_length=100) 
         text = [vocab_stoi[token] if token in vocab_stoi else vocab_stoi[''] for token in tok.tokenize(entry)]
         padded_text = None
         l = len(text)
-        if l < max_length:   padded_text = text + [ vocab_stoi[''] for i in range(len(text), max_length) ] 
-        elif l > max_length: padded_text = text[:max_length]
-        else:                        padded_text = text
+        if l < max_length:   
+            padded_text = text + [ vocab_stoi[''] for i in range(len(text), max_length) ] 
+        elif l > max_length: 
+            padded_text = text[:max_length]
+        else:                        
+            padded_text = text
         return padded_text
     else : 
         text = [ vocab_stoi[token] if token in vocab_stoi else vocab_stoi[''] for token in tok.tokenize(entry)]
