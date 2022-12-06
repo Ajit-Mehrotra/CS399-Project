@@ -1,32 +1,15 @@
-import pandas as pd
-import os
-import sys
-import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-from termcolor import colored
-import torch 
-import torch.nn as nn
-import torch.optim as optim
+import torch as torch
 from torchtext.vocab import FastText, vocab
-from torch.utils.data import Dataset, DataLoader
-import torch.nn.functional as F
-from torch.nn.utils.clip_grad import clip_grad_norm_
-from torch.utils.data import TensorDataset, DataLoader
-from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split
 from gensim.models.phrases import Phrases, Phraser
 import nltk
 from nltk.tokenize import word_tokenize
-from nltk.tokenize import WhitespaceTokenizer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import TreebankWordTokenizer
 from string import punctuation
-import re, random, pathlib
-import matplotlib.pyplot as plt
+import re
 from tqdm import tqdm
-import random
-
-from transformers import RobertaModel, RobertaTokenizer, get_linear_schedule_with_warmup, AutoTokenizer, AutoModel
+from transformers import AutoTokenizer
 
 def get_tokenized_data(data: pd.DataFrame) -> pd.DataFrame:
     tqdm.pandas()

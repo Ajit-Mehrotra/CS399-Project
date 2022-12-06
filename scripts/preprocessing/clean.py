@@ -12,7 +12,6 @@ def remove_non_us(data: pd.DataFrame) -> pd.DataFrame:
               ', MI', ', MN', ', MO', ', MS', ', MT', ', NC', ', ND', ', NE', ', NH', ', NJ', ', NM',
               ', NV', ', NY', ', OH', ', OK', ', OR', ', PA', ', RI', ', SC', ', SD', ', TN', ', TX',
               ', UT', ', VA', ', VT', ', WA', ', WI', ', WV', ', WY']
-
     data.dropna(subset=['location'], inplace=True)
     data = data[data['location'].str.contains('|'.join(States))]
     return data

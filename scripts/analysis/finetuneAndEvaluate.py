@@ -21,7 +21,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 def run_model(X_train: pd.DataFrame, X_test: pd.DataFrame,
               y_train: pd.Series, y_test: pd.Series) -> None:
     # rfc(X_train, X_test, y_train, y_test)
-    # Gaussian(X_train, X_test, y_train, y_test)
+    Gaussian(X_train, X_test, y_train, y_test)
     # logit_reg(X_train, X_test, y_train, y_test)
     # knn(X_train, X_test, y_train, y_test)
     # dt(X_train, X_test, y_train, y_test)
@@ -87,6 +87,7 @@ def rfc(X_train: pd.DataFrame, X_test: pd.DataFrame,
 
 def Gaussian(X_train: pd.DataFrame, X_test: pd.DataFrame,
              y_train: pd.Series, y_test: pd.Series) -> None:
+
     model = GaussianNB()
     model.fit(X_train, y_train)
 

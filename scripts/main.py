@@ -72,10 +72,14 @@ def establish_database() -> tuple[pd.DataFrame,
 def main():
     X_train, X_test, y_train, y_test = establish_database()
 
+    # After elaborate feature testing, models performed better without this for some odd reason
+    X_train.drop(columns=['current'], inplace=True)
+    X_test.drop(columns=['current'], inplace=True)
+
     # explore(X_train, X_test, y_train, y_test)
     # trainAndEvaluate(X_train, X_test, y_train, y_test)
 
-    # run_model(X_train, X_test, y_train, y_test)
+    run_model(X_train, X_test, y_train, y_test)
 
     reevaluate(X_train, X_test, y_train, y_test)
 

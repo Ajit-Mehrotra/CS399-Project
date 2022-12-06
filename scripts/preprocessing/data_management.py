@@ -7,7 +7,10 @@ def read_data(file_path: list[str], delimiter=",") -> pd.DataFrame:
     """Read the data from the named csv file."""
 
     print("Reading data from: ", os.path.join(*file_path))
-    return pd.read_csv(os.path.join(*file_path), delimiter=delimiter, index_col=0)
+    data = pd.read_csv(os.path.join(*file_path), delimiter=delimiter)
+    if "Unnamed: 0" in data.columns:
+        data = data.drop(columns=["Unnamed: 0"])
+    return data
 
 
 def write_model(model, file_path: list[str]) -> None:
