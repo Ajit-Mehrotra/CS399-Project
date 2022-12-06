@@ -37,7 +37,7 @@ def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     data = fill_na(data, ["culture_values",
                    "career_opp", "comp_benefits", "senior_mgmt"])
     # Drops unnecessary columns
-    data = column_droppage(data, ["firm", "date_review",
+    data = column_droppage(data, ["firm", "date_review", "job_title",
                            "diversity_inclusion", "location", "overall_rating", "tokenized_pros", "tokenized_cons", "tokenized_headline"])
 
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])

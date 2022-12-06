@@ -4,7 +4,6 @@ from sklearn.preprocessing import LabelEncoder
 import nltk
 from nltk.corpus import opinion_lexicon
 from nltk.tokenize import word_tokenize
-import re
 
 def codeify(data: pd.DataFrame) -> pd.DataFrame:
     """Convert specific columns in data to numeric."""
@@ -15,7 +14,6 @@ def codeify(data: pd.DataFrame) -> pd.DataFrame:
     # data = encode_firms(data)
     data = codeify_get_bing_scores(data)
     data = binary_balanced_work(data)
-    data = get_data_jobs(data)
 
     return data
 
@@ -134,28 +132,3 @@ def binary_balanced_work(data: pd.DataFrame) -> pd.DataFrame:
 
     data['work_life_balance'] = data.apply(lambda row: 1 if row['work_life_balance'] >= 3 else 0, axis=1)
     return data
-
-def find_data_jobs(string: str) -> str:
-    ''' Find the job title in the string. '''
-    if re.findall(r"dat[a-zA-Z].*scien.*", string, flags = re.I):
-        return "data scientist"
-    if re.findall(r"dat[a-zA-Z].*engin.*", string, flags = re.I):
-        return "data engineer"
-    if re.findall(r"dat[a-zA-Z].*anal.*", string, flags = re.I):
-        return "data analyst"
-    if re.findall(r"dat[a-zA-Z].*admin.*", string, flags = re.I):
-        return "database administrator"
-    if re.findall(r"dat[a-zA-Z].*arc.*", string, flags = re.I):
-        return "data architecture"
-    if re.findall(r"dat[a-zA-Z].*dev.*", string, flags = re.I):
-        return "data developer"
-    if re.findall(r"dat[a-zA-Z].*", string, flags = re.I):
-        return "misc data"
-
-def get_data_jobs(data: pd.DataFrame) -> pd.DataFrame:
-    ''' Get the job title from the headline. '''
-    data['job_title'] = data['job_title'].apply(lambda row: find_data_jobs(row))
-    job_columns = pd.get_dummies(data['job_title'])
-    data = pd.concat([data, job_columns], axis=1)
-    return data
-    
