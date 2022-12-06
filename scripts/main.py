@@ -1,11 +1,12 @@
 from analysis.trainAndEvaluate import trainAndEvaluate
 from analysis.explore import explore
+from analysis.finetuneAndEvaluate import run_model
 from preprocessing.transformAndScale import codeify
 from preprocessing.clean import remove_non_us, fill_na, column_droppage, remove_na, drop_dupes
 from preprocessing.split import split_data, split_train_test
 from preprocessing.data_management import read_data
-from analysis.finetuneAndEvaluate import run_model
 from preprocessing.NLP import get_tokenized_data
+from analysis.reevaluate import reevaluate
 import os
 import pandas as pd
 import numpy as np
@@ -74,8 +75,9 @@ def main():
     # explore(X_train, X_test, y_train, y_test)
     # trainAndEvaluate(X_train, X_test, y_train, y_test)
 
-    run_model(X_train, X_test, y_train, y_test)
+    # run_model(X_train, X_test, y_train, y_test)
 
+    reevaluate(X_train, X_test, y_train, y_test)
 
 if __name__ == '__main__':
     main()

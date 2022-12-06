@@ -1,16 +1,18 @@
 from util import printWithPadding
+from preprocessing.data_management import write_model
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report
-from preprocessing.data_management import write_model, read_model
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import classification_report, mean_squared_error, confusion_matrix
+
+from sklearn.svm import SVC
 
 import matplotlib.pyplot as plt
 import numpy as np
-
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -22,6 +24,7 @@ def run_model(X_train: pd.DataFrame, X_test: pd.DataFrame,
     # Gaussian(X_train, X_test, y_train, y_test)
     # logit_reg(X_train, X_test, y_train, y_test)
     # knn(X_train, X_test, y_train, y_test)
+    # dt(X_train, X_test, y_train, y_test)
     print("Done")
 
 
@@ -38,9 +41,6 @@ def graph_importances(feature_names: list[str], importances: list[float]) -> Non
 
 def graph_conf_matrix(y_test: pd.Series, y_pred: pd.Series) -> None:
     """Graphs the confusion matrix."""
-
-    from sklearn.metrics import confusion_matrix
-    import matplotlib.pyplot as plt
 
     conf_mat = confusion_matrix(y_test, y_pred)
     fig, ax = plt.subplots(figsize=(2.5, 2.5))
@@ -79,8 +79,10 @@ def rfc(X_train: pd.DataFrame, X_test: pd.DataFrame,
         X_train.columns, grid.best_estimator_.feature_importances_)
     graph_conf_matrix(y_test, results)
 
+    best_model = grid.best_estimator_
+
     # Saves the model
-    write_model(model, ["models", "rfc"])
+    write_model(best_model, ["models", "rfc"])
 
 
 def Gaussian(X_train: pd.DataFrame, X_test: pd.DataFrame,
@@ -103,8 +105,10 @@ def Gaussian(X_train: pd.DataFrame, X_test: pd.DataFrame,
     print("Best estimator: ", grid.best_estimator_)
     graph_conf_matrix(y_test, results)
 
+    best_model = grid.best_estimator_
+
     # Saves the model
-    write_model(model, ["models", "gaussian"])
+    write_model(best_model, ["models", "gaussian"])
 
 
 def logit_reg(X_train: pd.DataFrame, X_test: pd.DataFrame,
@@ -130,8 +134,10 @@ def logit_reg(X_train: pd.DataFrame, X_test: pd.DataFrame,
     graph_importances(X_train.columns, grid.best_estimator_.coef_[0])
     graph_conf_matrix(y_test, results)
 
+    best_model = grid.best_estimator_
+
     # Saves the model
-    write_model(model, ["models", "logit_reg"])
+    write_model(best_model, ["models", "logit_reg"])
 
 
 def knn(X_train: pd.DataFrame, X_test: pd.DataFrame,
@@ -155,5 +161,35 @@ def knn(X_train: pd.DataFrame, X_test: pd.DataFrame,
     print("Best estimator: ", grid.best_estimator_)
     graph_conf_matrix(y_test, results)
 
+    best_model = grid.best_estimator_
+
     # Saves the model
-    write_model(model, ["models", "knn"])
+    write_model(best_model, ["models", "knn"])
+
+def dt(X_train: pd.DataFrame, X_test: pd.DataFrame,
+       y_train: pd.Series, y_test: pd.Series) -> None:
+    model = DecisionTreeClassifier(random_state=42)
+    model.fit(X_train, y_train)
+
+    # grid search
+    param_grid = {'max_depth': [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25]}
+    grid = GridSearchCV(model, param_grid,
+                        scoring='precision', cv=5, verbose=2)
+    grid.fit(X_train, y_train)
+
+    # Gauges the model's performance
+    printWithPadding("Decision Tree")
+    results = grid.predict(X_test)
+    print(classification_report(y_test, results))
+    print("Best parameters: ", grid.best_params_)
+    print("Best cross-validation score: ", grid.best_score_)
+    print("Best estimator: ", grid.best_estimator_)
+    print("Feature importances: ", grid.best_estimator_.feature_importances_)
+    graph_importances(
+        X_train.columns, grid.best_estimator_.feature_importances_)
+    graph_conf_matrix(y_test, results)
+
+    best_model = grid.best_estimator_
+
+    # Saves the model
+    write_model(best_model, ["models", "dt"])

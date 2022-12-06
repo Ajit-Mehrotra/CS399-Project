@@ -12,7 +12,6 @@ def split_data(data: pd.DataFrame, ratio: float,
     data.drop(['work_life_balance'], axis=1, inplace=True)
 
     # x_train, x_test, y_train, y_test = train_test_split(data, rating, test_size=ratio, random_state=seed)
-
     sss = StratifiedShuffleSplit(
         n_splits=1,
         test_size=ratio,
