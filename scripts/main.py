@@ -37,7 +37,7 @@ def process() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     data = fill_na(data, ["culture_values",
                    "career_opp", "comp_benefits", "senior_mgmt"])
     # Drops unnecessary columns
-    data = column_droppage(data, ["firm", "date_review", "job_title",
+    data = column_droppage(data, ["date_review",
                            "diversity_inclusion", "location", "overall_rating", "tokenized_pros", "tokenized_cons", "tokenized_headline"])
 
     X_train, X_test, y_train, y_test = split_data(data, 0.2, ['data'])
@@ -73,15 +73,19 @@ def main():
     X_train, X_test, y_train, y_test = establish_database()
 
     # After elaborate feature testing, models performed better without this for some odd reason
-    X_train.drop(columns=['current'], inplace=True)
-    X_test.drop(columns=['current'], inplace=True)
+    # X_train.drop(columns=['current'], inplace=True)
+    # X_test.drop(columns=['current'], inplace=True)
+    # X_train.drop(columns=['former'], inplace=True)
+    # X_test.drop(columns=['former'], inplace=True)
+    
 
     # explore(X_train, X_test, y_train, y_test)
-    # trainAndEvaluate(X_train, X_test, y_train, y_test)
+    #trainAndEvaluate(X_train, X_test, y_train, y_test)
 
-    # run_model(X_train, X_test, y_train, y_test)
+    # optimize hyperparameters
+    run_model(X_train, X_test, y_train, y_test)
 
-    reevaluate(X_train, X_test, y_train, y_test)
+    #reevaluate(X_train, X_test, y_train, y_test)
 
 if __name__ == '__main__':
     main()

@@ -16,11 +16,11 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 def trainAndEvaluate(X_train: pd.DataFrame, X_test: pd.DataFrame,
                      y_train: pd.Series, y_test: pd.Series) -> None:
     ''' Train and evaluate models '''
-    test_lr(X_train, X_test, y_train, y_test)
-    test_knn(X_train, X_test, y_train, y_test)
-    test_dt(X_train, X_test, y_train, y_test)
+    # test_lr(X_train, X_test, y_train, y_test)
+    # test_knn(X_train, X_test, y_train, y_test)
+    # test_dt(X_train, X_test, y_train, y_test)
     test_rf(X_train, X_test, y_train, y_test)
-    test_nb(X_train, X_test, y_train, y_test)
+    # test_nb(X_train, X_test, y_train, y_test)
 
 
 def test_lr(X_train: pd.DataFrame, X_test: pd.DataFrame,

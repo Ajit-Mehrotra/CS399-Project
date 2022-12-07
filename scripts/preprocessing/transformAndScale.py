@@ -4,16 +4,21 @@ from sklearn.preprocessing import LabelEncoder
 import nltk
 from nltk.corpus import opinion_lexicon
 from nltk.tokenize import word_tokenize
+from sklearn.preprocessing import LabelEncoder
+import re
 
 def codeify(data: pd.DataFrame) -> pd.DataFrame:
     """Convert specific columns in data to numeric."""
 
     data = codeify_current(data)
+    data = get_data_jobs(data)
+    data = encode_firms(data)
     data = codeify_numerics(data)
     data = codeify_ovrs(data)
     # data = encode_firms(data)
     data = codeify_get_bing_scores(data)
     data = binary_balanced_work(data)
+
 
     return data
 
@@ -131,4 +136,43 @@ def binary_balanced_work(data: pd.DataFrame) -> pd.DataFrame:
     ''' Make work_life_balance binary. '''
 
     data['work_life_balance'] = data.apply(lambda row: 1 if row['work_life_balance'] >= 3 else 0, axis=1)
+    return data
+
+def find_data_jobs(string) -> str:
+    if re.findall(r"dat[a-zA-Z].*scien.*", string, flags = re.I):
+        return "data_scientist"
+    elif re.findall(r"dat[a-zA-Z].*engin.*", string, flags = re.I):
+        return "data_engineer"
+    elif re.findall(r"dat[a-zA-Z].*anal.*", string, flags = re.I):
+        return "data_analyst"
+    elif re.findall(r"dat[a-zA-Z].*admin.*", string, flags = re.I):
+        return "database_administrator"
+    elif re.findall(r"dat[a-zA-Z].*arc.*", string, flags = re.I):
+        return "data_architecture"
+    elif re.findall(r"dat[a-zA-Z].*dev.*", string, flags = re.I):
+        return "data_developer"
+    elif re.findall(r"dat[a-zA-Z].*", string, flags = re.I):
+        return "misc_data"
+    elif re.findall(r"it.*", string, flags = re.I):
+        return "it"
+    else:
+        return None
+
+def get_data_jobs(data: pd.DataFrame) -> pd.DataFrame:
+    ''' Get the data jobs from the job title. '''
+    data['job_title'] = data.apply(lambda row: find_data_jobs(row['job_title']), axis=1)
+    data = data[data['job_title'].notna()]
+    data = data.reset_index(drop=True)
+    enc = LabelEncoder()
+    data['job_title'] = enc.fit_transform(data['job_title'])
+    return data
+
+def encode_firms(data: pd.DataFrame) -> pd.DataFrame:
+    ''' Turn firms to ints '''
+    enc = OrdinalEncoder()
+    data['firm'] = data['firm'].astype('str')
+    # reshape firm column to 2D array
+    
+    # data['firm'] = data['firm'].reshape(-1, 1)
+    data[['firm']] = enc.fit_transform(data[['firm']])
     return data

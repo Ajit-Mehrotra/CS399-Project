@@ -13,7 +13,7 @@ def split_data(data: pd.DataFrame, ratio: float,
 
     # x_train, x_test, y_train, y_test = train_test_split(data, rating, test_size=ratio, random_state=seed)
     sss = StratifiedShuffleSplit(
-        n_splits=1,
+        n_splits=20,
         test_size=ratio,
         random_state=seed)
     for train_index, test_index in sss.split(data, rating):

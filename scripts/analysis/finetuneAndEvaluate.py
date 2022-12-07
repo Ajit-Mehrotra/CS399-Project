@@ -20,8 +20,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 def run_model(X_train: pd.DataFrame, X_test: pd.DataFrame,
               y_train: pd.Series, y_test: pd.Series) -> None:
-    # rfc(X_train, X_test, y_train, y_test)
-    Gaussian(X_train, X_test, y_train, y_test)
+    rfc(X_train, X_test, y_train, y_test)
+    # Gaussian(X_train, X_test, y_train, y_test)
     # logit_reg(X_train, X_test, y_train, y_test)
     # knn(X_train, X_test, y_train, y_test)
     # dt(X_train, X_test, y_train, y_test)
@@ -60,8 +60,8 @@ def rfc(X_train: pd.DataFrame, X_test: pd.DataFrame,
         y_train: pd.Series, y_test: pd.Series):
     ''' Random Forest Classifier '''
     model = RandomForestClassifier(oob_score=True, random_state=42)
-    param_grid = {'n_estimators': [100, 200, 300],
-                  'max_depth': [3, 5, 7, 9]}
+    param_grid = {'n_estimators': [100, 150, 200],
+                  'max_depth': [3, 5, 7]}
 
     grid = GridSearchCV(model, param_grid,
                         scoring='precision', cv=5, verbose=2)
