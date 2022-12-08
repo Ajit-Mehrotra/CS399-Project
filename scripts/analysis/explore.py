@@ -43,6 +43,8 @@ def explore(X_train: pd.DataFrame, X_test: pd.DataFrame,
     # visualize_employmentstat(X, y)
     visualize_numeric(X, y)
 
+    visualize_work_life(y)
+
 
 def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
     ''' See distribution of reviews by employment status at the time of review '''
@@ -58,7 +60,7 @@ def visualize_employmentstat(X: pd.DataFrame, y: pd.Series) -> None:
     plt.tight_layout()
     plt.show()
     plt.close(fig)
-    
+
 
 
 def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
@@ -84,3 +86,15 @@ def visualize_numeric(X: pd.DataFrame, y: pd.Series) -> None:
             plt.show()
             plt.close(fig2)
 
+def visualize_work_life(y: pd.Series) -> None:
+    copy_y = y['work_life_balance'] = y.apply(lambda row: "Work life Balance >= 3" if row == 1 else "Work life Balance < 3")
+    print("Visualizing work-life-balance")
+    sns.set_theme(style="whitegrid", palette="pastel")
+    fig3 = plt.figure(figsize=(10, 10))
+    plt.title("Histogram distribution of work-life-balance")
+    plt.xlabel("Work-life-balance")
+    plt.ylabel("Count")
+    sns.histplot(copy_y, bins="5", discrete=True, shrink=0.8)
+    plt.tight_layout()
+    plt.show()
+    plt.close(fig3)
