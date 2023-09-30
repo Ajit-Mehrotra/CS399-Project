@@ -1,4 +1,5 @@
 # CS399 Team 5 Group Project
+Group Members: Kobe Rankich, Kevin Troncoso, Sandhya Sangappa, Ajit Mehrotra
 
 ## File Structure
 
